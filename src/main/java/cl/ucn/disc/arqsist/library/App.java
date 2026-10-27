@@ -31,7 +31,7 @@ public final class App {
 
         Clock clock = Clock.system(ZoneId.of("America/Santiago"));
         BookService bookService = new BookService(bookDao);
-        MemberService memberService = new MemberService(memberDao, bookDao, loanDao);
+        MemberService memberService = new MemberService(memberDao);
         LoanService loanService = new LoanService(loanDao, memberDao, bookService, clock);
         ReservationService reservationService = new ReservationService(reservationDao, memberDao, loanDao, bookService, clock);
 
