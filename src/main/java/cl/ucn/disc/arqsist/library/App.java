@@ -26,17 +26,24 @@ import java.time.Clock;
 import java.time.ZoneId;
 import java.util.Map;
 
-
+/**
+ * Application entry point that configures and starts the library web server.
+ */
 public final class App {
 
-   
+    /** Logger used for application startup messages. */
     private static final Logger log = LoggerFactory.getLogger(App.class);
 
-    
+    /** Prevents instances of the application entry point. */
     private App() {
     }
 
-    
+    /**
+     * Initializes persistence, wires the application layers, and starts Javalin.
+     *
+     * @param args command-line arguments (currently unused).
+     * @throws Exception if database initialization or server startup fails.
+     */
     public static void main(String[] args) throws Exception {
         log.info("Opening the database");
         Database db = new Database("jdbc:sqlite:database.db");

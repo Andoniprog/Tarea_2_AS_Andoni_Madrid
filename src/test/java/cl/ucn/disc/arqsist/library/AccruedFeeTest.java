@@ -21,21 +21,28 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
+/**
+ * Verifies that overdue fees are accrued for display without being persisted.
+ */
 class AccruedFeeTest {
 
-    
+    /** DAO used to create and inspect test loans. */
     private LoanDao loanDao;
 
-   
+    /** Service whose fee-calculation behavior is under test. */
     private LoanService loanService;
 
-    
+    /** Book associated with the test loans. */
     private Book book;
 
-   
+    /** Member associated with the test loans. */
     private Member member;
 
-    
+    /**
+     * Creates an in-memory database, service, and base test records.
+     *
+     * @throws Exception if database setup or persistence fails.
+     */
     @BeforeEach
     void setUp() throws Exception {
         Database db = new Database("jdbc:sqlite::memory:");
@@ -52,7 +59,11 @@ class AccruedFeeTest {
         memberDao.create(member);
     }
 
-    
+    /**
+     * Checks that only overdue open loans accrue a fee and that the fee is not stored.
+     *
+     * @throws Exception if persisting or loading test loans fails.
+     */
     @Test
     void openOverdueLoanShowsAccruedFee() throws Exception {
         Loan overdue = new Loan(member, book, LocalDate.of(2025, 12, 1), LocalDate.of(2025, 12, 22));
@@ -67,6 +78,13 @@ class AccruedFeeTest {
         assertEquals(0.0, loanDao.findById(overdue.getId()).getOverdueFee(), "the accrued fee must not be stored");
     }
 
+    /**
+     * Finds the accrued fee for a loan in a result list.
+     *
+     * @param loans loans returned by the service.
+     * @param id identifier of the loan to find.
+     * @return the matching loan's overdue fee.
+     */
     private static double feeOf(List<Loan> loans, int id) {
         return loans.stream().filter(loan -> loan.getId() == id).findFirst().orElseThrow().getOverdueFee();
     }

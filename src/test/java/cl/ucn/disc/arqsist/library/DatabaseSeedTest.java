@@ -18,24 +18,37 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
+/**
+ * Verifies that initial database data is consistent and seeded only once.
+ */
 class DatabaseSeedTest {
 
 
+    /** Database under test, backed by an in-memory SQLite connection. */
     private Database db;
 
    
+    /** DAO used to inspect seeded books. */
     private BookDao bookDao;
 
     
+    /** DAO used to inspect seeded members. */
     private MemberDao memberDao;
 
     
+    /** DAO used to inspect seeded loans. */
     private LoanDao loanDao;
 
    
+    /** DAO used to inspect seeded reservations. */
     private ReservationDao reservationDao;
 
     
+    /**
+     * Creates an in-memory database and its DAOs.
+     *
+     * @throws Exception if database or DAO initialization fails.
+     */
     @BeforeEach
     void setUp() throws Exception {
         db = new Database("jdbc:sqlite::memory:");
@@ -45,7 +58,11 @@ class DatabaseSeedTest {
         reservationDao = new ReservationDao(db.connectionSource());
     }
 
-    
+    /**
+     * Checks that seeding creates the expected sample data and keeps copy counts consistent.
+     *
+     * @throws Exception if seeding or reading database records fails.
+     */
     @Test
     void seedCreatesConsistentData() throws Exception {
         db.seedIfEmpty();
@@ -72,7 +89,11 @@ class DatabaseSeedTest {
         }
     }
 
-    
+    /**
+     * Checks that repeated seeding does not duplicate records.
+     *
+     * @throws Exception if seeding or reading database records fails.
+     */
     @Test
     void seedingTwiceDoesNotDuplicateData() throws Exception {
         db.seedIfEmpty();

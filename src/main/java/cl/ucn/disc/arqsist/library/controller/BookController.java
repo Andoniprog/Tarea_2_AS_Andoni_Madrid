@@ -5,17 +5,28 @@ import cl.ucn.disc.arqsist.library.service.BookService;
 import io.javalin.config.JavalinConfig;
 
 
+/**
+ * Registers HTTP routes for catalog operations.
+ */
 public final class BookController {
 
-    
+    /** Service that performs book operations. */
     private final BookService service;
 
-    
+    /**
+     * Creates a controller backed by the supplied book service.
+     *
+     * @param service service used by the catalog routes.
+     */
     public BookController(BookService service) {
         this.service = service;
     }
 
-    
+    /**
+     * Registers the book listing, lookup, and creation routes.
+     *
+     * @param config Javalin configuration receiving the routes.
+     */
     public void register(JavalinConfig config) {
         config.routes.get("/books", ctx -> ctx.json(service.listAll()));
         config.routes.get("/books/{id}", ctx -> ctx.json(service.findById(Integer.parseInt(ctx.pathParam("id")))));

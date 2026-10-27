@@ -14,10 +14,20 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Manages the SQLite connection, creates the library tables, and seeds initial data.
+ */
 public final class Database {
 
+    /** ORMLite connection source shared by the persistence layer. */
     private final ConnectionSource connectionSource;
 
+    /**
+     * Opens the database and creates any missing library tables.
+     *
+     * @param jdbcUrl JDBC URL of the database to open.
+     * @throws SQLException if the connection cannot be opened or a table cannot be created.
+     */
     public Database(String jdbcUrl) throws SQLException {
         this.connectionSource = new JdbcConnectionSource(jdbcUrl);
         TableUtils.createTableIfNotExists(connectionSource, Book.class);
@@ -26,10 +36,20 @@ public final class Database {
         TableUtils.createTableIfNotExists(connectionSource, Reservation.class);
     }
 
+    /**
+     * Returns the connection source used by the DAOs.
+     *
+     * @return the shared ORMLite connection source.
+     */
     public ConnectionSource connectionSource() {
         return connectionSource;
     }
 
+    /**
+     * Inserts the sample catalog, members, loans, and reservation when their tables are empty.
+     *
+     * @throws SQLException if data cannot be read from or written to the database.
+     */
     public void seedIfEmpty() throws SQLException {
         Dao<Book, Integer> bookDao = DaoManager.createDao(connectionSource, Book.class);
         if (bookDao.queryForAll().isEmpty()) {
@@ -66,6 +86,17 @@ public final class Database {
         }
     }
 
+    /**
+     * Creates a sample loan and updates the book's available-copy count.
+     *
+     * @param bookDao DAO used to persist the updated book.
+     * @param loanDao DAO used to persist the loan.
+     * @param member member borrowing the book.
+     * @param book book being borrowed.
+     * @param loanDate date the loan begins.
+     * @param dueDate date the loan is due.
+     * @throws SQLException if either database write fails.
+     */
     private void createLoan(Dao<Book, Integer> bookDao, Dao<Loan, Integer> loanDao, Member member, Book book, LocalDate loanDate, LocalDate dueDate) throws SQLException {
         loanDao.create(new Loan(member, book, loanDate.toString(), dueDate.toString()));
         book.setAvailableCopies(book.getAvailableCopies() - 1);

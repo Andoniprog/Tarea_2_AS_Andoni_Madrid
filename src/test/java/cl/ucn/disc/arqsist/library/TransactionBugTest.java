@@ -19,15 +19,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+/**
+ * Verifies that a failed checkout does not leave a partially updated book record.
+ */
 class TransactionBugTest {
 
     
+    /** DAO used to create and inspect the test book. */
     private BookDao bookDao;
 
     
+    /** Loan service whose checkout transaction is under test. */
     private LoanService loanService;
 
     
+    /**
+     * Creates an in-memory database and the checkout service.
+     *
+     * @throws Exception if database or DAO initialization fails.
+     */
     @BeforeEach
     void setUp() throws Exception {
         Database db = new Database("jdbc:sqlite::memory:");
@@ -38,7 +48,11 @@ class TransactionBugTest {
         loanService = new LoanService(loanDao, memberDao, new BookService(bookDao), clock);
     }
 
-    
+    /**
+     * Checks that a checkout for a missing member leaves the available-copy count unchanged.
+     *
+     * @throws Exception if database operations fail.
+     */
     @Test
     void checkoutLeavesNoPartialStateOnFailure() throws Exception {
         Book book = new Book("Clean Code", "Robert C. Martin", "9780132350884", 2);

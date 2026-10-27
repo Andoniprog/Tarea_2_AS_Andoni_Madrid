@@ -16,7 +16,9 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
-
+/**
+ * Handles reservation creation and fulfillment as book loans.
+ */
 public final class ReservationService {
 
     /** Persistence of reservations. */
@@ -34,7 +36,15 @@ public final class ReservationService {
     /** Source of the current date. */
     private final Clock clock;
 
-    
+    /**
+     * Creates the service with its persistence, book, and time dependencies.
+     *
+     * @param reservationDao DAO used to persist reservations.
+     * @param memberDao DAO used to verify members.
+     * @param loanDao DAO used to create loans when fulfilling reservations.
+     * @param bookService service used to manage book availability.
+     * @param clock clock used to determine reservation and loan dates.
+     */
     public ReservationService(ReservationDao reservationDao, MemberDao memberDao, LoanDao loanDao,
                               BookService bookService, Clock clock) {
         this.reservationDao = reservationDao;
@@ -44,7 +54,15 @@ public final class ReservationService {
         this.clock = clock;
     }
 
-    
+    /**
+     * Creates a reservation for an existing member and book.
+     *
+     * @param bookId identifier of the reserved book.
+     * @param memberId identifier of the reserving member.
+     * @return the created reservation.
+     * @throws SQLException if a persistence operation fails.
+     * @throws NotFoundException if the book or member does not exist.
+     */
     public Reservation reserve(int bookId, int memberId) throws SQLException {
         Book book = bookService.findById(bookId);
         if (book == null) {
@@ -59,12 +77,25 @@ public final class ReservationService {
         return reservation;
     }
 
-   
+    /**
+     * Retrieves all reservations.
+     *
+     * @return all persisted reservations.
+     * @throws SQLException if the query fails.
+     */
     public List<Reservation> findAll() throws SQLException {
         return reservationDao.findAll();
     }
 
-    
+    /**
+     * Fulfills an open reservation by creating a loan and checking out its book.
+     *
+     * @param reservationId identifier of the reservation to fulfill.
+     * @return the loan created from the reservation.
+     * @throws SQLException if a persistence operation fails.
+     * @throws NotFoundException if the reservation does not exist.
+     * @throws IllegalStateException if the reservation is already fulfilled.
+     */
     public Loan fulfill(int reservationId) throws SQLException {
         Reservation reservation = reservationDao.findById(reservationId);
         if (reservation == null) {
