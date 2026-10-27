@@ -44,6 +44,10 @@ public final class Loan {
         this.overdueFee = 0.0;
     }
 
+    public Loan(Member member, Book book, LocalDate loanDate, LocalDate dueDate) {
+        this(member, book, loanDate.toString(), dueDate.toString());
+    }
+
     public int getId() {
         return id;
     }
@@ -68,28 +72,28 @@ public final class Loan {
         this.book = book;
     }
 
-    public String getLoanDate() {
-        return loanDate;
+    public LocalDate getLoanDate() {
+        return LocalDate.parse(loanDate);
     }
 
-    public void setLoanDate(String loanDate) {
-        this.loanDate = loanDate;
+    public void setLoanDate(LocalDate loanDate) {
+        this.loanDate = loanDate.toString();
     }
 
-    public String getDueDate() {
-        return dueDate;
+    public LocalDate getDueDate() {
+        return LocalDate.parse(dueDate);
     }
 
-    public void setDueDate(String dueDate) {
-        this.dueDate = dueDate;
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate.toString();
     }
 
-    public String getReturnDate() {
-        return returnDate;
+    public LocalDate getReturnDate() {
+        return returnDate == null ? null : LocalDate.parse(returnDate);
     }
 
-    public void setReturnDate(String returnDate) {
-        this.returnDate = returnDate;
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate == null ? null : returnDate.toString();
     }
 
     public boolean isReturned() {
@@ -97,7 +101,7 @@ public final class Loan {
     }
 
     public boolean isOverdue() {
-        return !returned && LocalDate.parse(dueDate).isBefore(LocalDate.now());
+        return !returned && getDueDate().isBefore(LocalDate.now());
     }
 
     public void setReturned(boolean returned) {

@@ -45,7 +45,7 @@ public final class ReservationService {
     }
 
     
-    public Reservation reserve(int bookId, int memberId) {
+    public Reservation reserve(int bookId, int memberId) throws SQLException {
         Book book = bookService.findById(bookId);
         if (book == null) {
             throw new NotFoundException("Book not found: " + bookId);
@@ -60,7 +60,7 @@ public final class ReservationService {
     }
 
    
-    public List<Reservation> findAll() {
+    public List<Reservation> findAll() throws SQLException {
         return reservationDao.findAll();
     }
 

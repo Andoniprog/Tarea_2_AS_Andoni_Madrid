@@ -43,9 +43,6 @@ public final class Database {
             memberDao.create(new Member("Ada Lovelace", "ada@example.com"));
             memberDao.create(new Member("Grace Hopper", "grace@example.com"));
             memberDao.create(new Member("Alan Turing", "alan@example.com"));
-            memberDao.create(new Member("Edsger Dijkstra", "edsger@example.com"));
-            memberDao.create(new Member("Barbara Liskov", "barbara@example.com"));
-            memberDao.create(new Member("Donald Knuth", "donald@example.com"));
         }
 
         Dao<Loan, Integer> loanDao = DaoManager.createDao(connectionSource, Loan.class);
@@ -66,7 +63,6 @@ public final class Database {
             LocalDate today = LocalDate.now();
 
             reservationDao.create(new Reservation(members.get(0), books.get(1), today.minusDays(1).toString()));
-            reservationDao.create(new Reservation(members.get(1), books.get(0), today.minusDays(3).toString()));
         }
     }
 

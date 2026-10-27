@@ -3,6 +3,8 @@ package cl.ucn.disc.arqsist.library.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.time.LocalDate;
+
 @DatabaseTable(tableName = "reservations")
 public final class Reservation {
 
@@ -29,6 +31,10 @@ public final class Reservation {
         this.book = book;
         this.reservedAt = reservedAt;
         this.fulfilled = false;
+    }
+
+    public Reservation(Member member, Book book, LocalDate reservedAt) {
+        this(member, book, reservedAt.toString());
     }
 
     public int getId() {

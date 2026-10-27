@@ -55,7 +55,7 @@ public final class LoanService {
 
     
     public List<Loan> findAll() {
-        return withAccruedFees(loanDao.findAll());
+        return withAccruedFees(loadAllLoans());
     }
 
    
@@ -85,9 +85,17 @@ public final class LoanService {
     
     public List<Loan> overdueLoans() {
         LocalDate today = LocalDate.now(clock);
-        return withAccruedFees(loanDao.findAll()).stream()
+        return withAccruedFees(loadAllLoans()).stream()
                 .filter(loan -> !loan.isReturned() && loan.getDueDate().isBefore(today))
                 .toList();
+    }
+
+    private List<Loan> loadAllLoans() {
+        try {
+            return loanDao.findAll();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Failed to load loans", e);
+        }
     }
 
     

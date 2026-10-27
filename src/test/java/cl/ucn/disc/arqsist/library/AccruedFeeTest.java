@@ -54,7 +54,7 @@ class AccruedFeeTest {
 
     
     @Test
-    void openOverdueLoanShowsAccruedFee() {
+    void openOverdueLoanShowsAccruedFee() throws Exception {
         Loan overdue = new Loan(member, book, LocalDate.of(2025, 12, 1), LocalDate.of(2025, 12, 22));
         Loan active = new Loan(member, book, LocalDate.of(2026, 1, 10), LocalDate.of(2026, 1, 31));
         loanDao.create(overdue);
